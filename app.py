@@ -1,15 +1,8 @@
 import os
-import requests
-import streamlit as st
-from termcolor import colored
-from dotenv import load_dotenv
-
 import openai
-from langchain.chains import LLMChain
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
-from langchain.schema import HumanMessage
-from render import bot_msg_container_html_template, user_msg_container_html_template, render_article_preview
+import streamlit as st
+from dotenv import load_dotenv
+from render import bot_msg_container_html_template, user_msg_container_html_template
 from utils import semantic_search
 import prompts
 

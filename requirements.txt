@@ -1,2 +1,6 @@
-openai
-langchain==0.0.150
+streamlit==1.21.0
+openai==0.27.4
+requests==2.28.2
+termcolor==2.3.0
+python-dotenv==1.0.0
+pinecone-client==2.2.1
