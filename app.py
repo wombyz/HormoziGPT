@@ -1,24 +1,28 @@
-from render import bot_msg_container_html_template, user_msg_container_html_template, render_article_preview
-import prompts
-from utils import semantic_search
-import openai
 import os
 import requests
-from langchain.prompts import (
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-)
-from langchain.schema import (
-    HumanMessage,
-)
-from langchain.chat_models import ChatOpenAI
-from langchain.chains import LLMChain
 import streamlit as st
+from termcolor import colored
+from dotenv import load_dotenv
 
-openai.api_key = os.environ["OPENAI_API_KEY"]
+import openai
+from langchain.chains import LLMChain
+from langchain.chat_models import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
+from langchain.schema import HumanMessage
+from render import bot_msg_container_html_template, user_msg_container_html_template, render_article_preview
+from utils import semantic_search
+import prompts
 
-st.title("HormoziGPT")
+load_dotenv()
 
+# Set up OpenAI API key
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# Define chat history storage
+if "history" not in st.session_state:
+    st.session_state.history = []
+
+# Construct messages from chat history
 def construct_messages(history):
     messages = [{"role": "system", "content": prompts.system_message}]
     
@@ -28,63 +32,47 @@ def construct_messages(history):
     
     return messages
 
-if "history" not in st.session_state:
-    st.session_state.history = []
-
-
+# Generate response to user prompt
 def generate_response():
-
     st.session_state.history.append({
         "message": st.session_state.prompt,
         "is_user": True
     })
 
-    # Perform semantic search
+    # Perform semantic search and format results
     search_results = semantic_search(st.session_state.prompt, top_k=3)
-
-    # Format search results
     context = ""
     for i, (title, transcript) in enumerate(search_results):
         context += f"Snippet from: {title}\n {transcript}\n\n"
 
-    # Insert user query and context into human prompt template
+    # Generate human prompt template and convert to API message format
     query_with_context = prompts.human_template.format(query=st.session_state.prompt, context=context)
-
-    # Convert to API message format
-    human_message_prompt = HumanMessagePromptTemplate.from_template(query_with_context)
 
     # Convert chat history to a list of messages
     messages = construct_messages(st.session_state.history)
-
-    # Add the user message to the chat history
-    messages.append(human_message_prompt)
+    messages.append({"role": "user", "content": query_with_context})
 
     # Run the LLMChain
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages
-    )
+    response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages)
+    print(messages)
 
     # Parse response
     bot_response = response["choices"][0]["message"]["content"]
-
     st.session_state.history.append({
         "message": bot_response,
         "is_user": False
     })
 
-st.text_input("Enter your prompt:",
-              key="prompt",
-              placeholder="e.g. 'Why is Tesla selling off?'",
-              on_change=generate_response
-              )
+# User input prompt
+user_prompt = st.text_input("Enter your prompt:",
+                            key="prompt",
+                            placeholder="e.g. 'Why is Tesla selling off?'",
+                            on_change=generate_response
+                            )
 
+# Display chat history
 for message in st.session_state.history:
     if message["is_user"]:
-        st.write(user_msg_container_html_template.replace(
-            "$MSG", message["message"]), unsafe_allow_html=True)
+        st.write(user_msg_container_html_template.replace("$MSG", message["message"]), unsafe_allow_html=True)
     else:
-        st.write(bot_msg_container_html_template.replace(
-            "$MSG", message["message"]), unsafe_allow_html=True)
-
-# Your existing code for API keys, environment variables, and utility functions
+        st.write(bot_msg_container_html_template.replace("$MSG", message["message"]), unsafe_allow_html=True)
