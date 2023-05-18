@@ -11,6 +11,8 @@ load_dotenv()
 # Set up OpenAI API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+st.header("HormoziGPT - By Liam Ottley")
+
 # Define chat history storage
 if "history" not in st.session_state:
     st.session_state.history = []
@@ -59,7 +61,7 @@ def generate_response():
 # User input prompt
 user_prompt = st.text_input("Enter your prompt:",
                             key="prompt",
-                            placeholder="e.g. 'Why is Tesla selling off?'",
+                            placeholder="e.g. 'Write me a business plan to scale my coaching business'",
                             on_change=generate_response
                             )
 
