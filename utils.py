@@ -21,32 +21,18 @@ def get_embeddings_openai(text):
         print(f"Error in get_embeddings_openai: {e}")
         raise
 
-def semantic_search(query, **kwargs):
+def semantic_search(query, index, **kwargs):
     try:
         xq = get_embeddings_openai(query)
 
-        url = pinecone_endpoint
-        headers = {
-            "Api-Key": api_key_pinecone,
-            "Content-Type": "application/json"
-        }
-        body = {
-            "vector": xq[0],
-            "topK": str(kwargs["top_k"]) if "top_k" in kwargs else "1",
-            "includeMetadata": "false" if "include_metadata" in kwargs and not kwargs["include_metadata"] else True
-        }
-        res = requests.post(url, json=body, headers=headers)
-        res.raise_for_status()  # Raise an exception if the HTTP request returns an error
+        xr = index.query(vector=xq[0], top_k=kwargs.get('top_k', 1), include_metadata=kwargs.get('include_metadata', True))
 
-        # Ensure the response is valid JSON before parsing it
-        try:
-            res_json = res.json()
-        except json.JSONDecodeError:
-            print(f"Invalid JSON response: {res.text}")
-            raise
+        if xr.error:
+            print(f"Invalid response: {xr}")
+            raise Exception(f"Query failed: {xr.error}")
 
-        titles = [r["metadata"]["title"] for r in res_json["matches"]]
-        transcripts = [r["metadata"]["transcript"] for r in res_json["matches"]]
+        titles = [r["metadata"]["title"] for r in xr["matches"]]
+        transcripts = [r["metadata"]["transcript"] for r in xr["matches"]]
         return list(zip(titles, transcripts))
 
     except Exception as e:

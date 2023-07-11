@@ -5,11 +5,13 @@ from dotenv import load_dotenv
 from render import bot_msg_container_html_template, user_msg_container_html_template
 from utils import semantic_search
 import prompts
+import pinecone
 
-load_dotenv()
 
 # Set up OpenAI API key
 openai.api_key = st.secrets["OPENAI_API_KEY"]
+pinecone.init(api_key=st.secrets["PINECONE_API_KEY"], environment=st.secrets["PINECONE_ENVIRONMENT"])
+index = pinecone.Index(st.secrets["PINECONE_INDEX_NAME"])
 
 st.header("HormoziGPT - By Liam Ottley")
 
@@ -34,8 +36,13 @@ def generate_response():
         "is_user": True
     })
 
+    print(f"Query: {st.session_state.prompt}")
+
     # Perform semantic search and format results
-    search_results = semantic_search(st.session_state.prompt, top_k=3)
+    search_results = semantic_search(st.session_state.prompt, index, top_k=3)
+
+    print(f"Results: {search_results}")
+
     context = ""
     for i, (title, transcript) in enumerate(search_results):
         context += f"Snippet from: {title}\n {transcript}\n\n"
