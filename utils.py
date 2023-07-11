@@ -1,14 +1,13 @@
 import os
 import openai
 import requests
-from dotenv import load_dotenv
+import streamlit as st
 
-load_dotenv()
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-api_key_pinecone = os.getenv("PINECONE_API_KEY")
-pinecone_environment = os.getenv("PINECONE_ENVIRONMENT")
-pinecone_endpoint = os.getenv("PINECONE_ENDPOINT")
+openai.api_key = st.secrets["OPENAI_API_KEY"]
+api_key_pinecone = st.secrets["PINECONE_API_KEY"]
+pinecone_environment = st.secrets["PINECONE_ENVIRONMENT"]
+pinecone_endpoint = st.secrets["PINECONE_ENDPOINT"]
 
 # Get embeddings for a given string
 def get_embeddings_openai(text):

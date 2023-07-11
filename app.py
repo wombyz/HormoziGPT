@@ -9,7 +9,7 @@ import prompts
 load_dotenv()
 
 # Set up OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 st.header("HormoziGPT - By Liam Ottley")
 
