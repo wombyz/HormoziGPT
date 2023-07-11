@@ -11,7 +11,7 @@ load_dotenv()
 # Set up OpenAI API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-st.header("HormoziGPT - By Liam Ottley")
+st.header("HormoziGPT")
 
 # Define chat history storage
 if "history" not in st.session_state:

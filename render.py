@@ -5,7 +5,7 @@ import re
 bot_msg_container_html_template = '''
 <div style='background-color: #FFFFFF; padding: 10px; border-radius: 5px; margin-bottom: 10px; display: flex'>
     <div style="width: 20%; display: flex; justify-content: center">
-        <img src="https://yt3.googleusercontent.com/xGH1BCpEHp4V0hRXEpKUbudZy2zxon3z7JnnAXngiW-8374wuiFolwYf6wmgVbKr-_RmqBHJrA=s176-c-k-c0x00ffffff-no-rj" style="max-height: 50px; max-width: 50px; border-radius: 50%;">
+        <img src="https://yt3.googleusercontent.com/ixwBtVrollE0Z5nA5YPHrnkKQoK09Evbe4gWCvJlleB2rFERDz3m2Jynhc3sGBE-EnzbH6ov=s176-c-k-c0x00ffffff-no-rj" style="max-height: 50px; max-width: 50px; border-radius: 50%;">
     </div>
     <div style="width: 80%;">
         $MSG
@@ -19,7 +19,7 @@ user_msg_container_html_template = '''
         $MSG
     </div>
     <div style="width: 20%; margin-left: auto; display: flex; justify-content: center;">
-        <img src="https://yt3.googleusercontent.com/dddKZKUsIKmDM0lrA5sDhgrvYBQKRtJzrJ-NtVM-aAznZpYCJ0wGYIvmvKL3_0uxbYLnRVEA=s176-c-k-c0x00ffffff-no-rj" style="max-width: 50px; max-height: 50px; float: right; border-radius: 50%;">
+        <img src="https://yt3.googleusercontent.com/w3Hwj4_weJ_tx9z79ffwCmaAU3eHPuJ5nvk_QDmNyxcbNdTaBBAIxenUXGybyUjLE4ktVKqyEA=s176-c-k-c0x00ffffff-no-rj" style="max-width: 50px; max-height: 50px; float: right; border-radius: 50%;">
     </div>    
 </div>
 '''
